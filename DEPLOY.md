@@ -15,7 +15,7 @@
 ## Railway
 
 1. Open Railway and create a new project from this GitHub repo.
-2. Railway should build from the included [Dockerfile](/D:/mcDashboard/Dockerfile).
+2. Railway should detect [railway.toml](/D:/mcDashboard/railway.toml) and build from the included [Dockerfile](/D:/mcDashboard/Dockerfile).
 3. Keep the default public domain first.
 4. Verify:
    - `/`
