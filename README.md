@@ -1,5 +1,7 @@
 # dashboardfactory4.0
 
+[![Deploy Readiness](https://github.com/fieldcs9-lab/dashboardfactory4.0/actions/workflows/ci.yml/badge.svg)](https://github.com/fieldcs9-lab/dashboardfactory4.0/actions/workflows/ci.yml)
+
 Smart Factory 4.0 dashboard for machine monitoring, KPI tracking, hourly trends, and shift-based operations view.
 
 ## Local Structure
