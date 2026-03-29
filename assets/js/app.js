@@ -3,6 +3,7 @@ let currentZone = 'ALL';
 let currentTrendMachineId = null;
 let lastReceivedData = null;
 let currentShiftMode = document.body.dataset.shiftMode || 'night';
+const APP_CONFIG = window.APP_CONFIG || {};
 
 const VIEW_CONFIG = {
     ALL: {
@@ -108,12 +109,18 @@ function updateViewCopy() {
     subtitleEl.textContent = view.subtitle;
 }
 
+function buildApiUrl(path) {
+    const baseUrl = String(APP_CONFIG.apiBaseUrl || '').trim().replace(/\/+$/, '');
+    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+    return baseUrl ? `${baseUrl}${normalizedPath}` : normalizedPath;
+}
+
 async function fetchStatus() {
     updateSystemMetrics();
     updateClock();
 
     try {
-        const response = await fetch('api/status.php', { cache: 'no-store' });
+        const response = await fetch(buildApiUrl('/api/status.php'), { cache: 'no-store' });
         if (!response.ok) {
             throw new Error('offline');
         }

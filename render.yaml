@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: dashboardfactory4-0
+    runtime: docker
+    plan: free
+    autoDeploy: true
+    branch: main
