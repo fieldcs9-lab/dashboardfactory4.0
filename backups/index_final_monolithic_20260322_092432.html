@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Industrial Machine Dashboard - mcDashboard</title>
+    <style>
+        /* Modern Industrial Dark Theme */
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-running: #10b981; /* Emerald 500 */
+            --accent-idle: #f59e0b;    /* Amber 500 */
+            --accent-stop: #ef4444;    /* Red 500 */
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 24px;
+            color: var(--text-primary);
+        }
+
+        header {
+            text-align: left;
+            margin-bottom: 40px;
+            border-left: 4px solid var(--accent-running);
+            padding-left: 20px;
+            max-width: 1400px;
+            margin: 0 auto 40px auto;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.025em;
+        }
+
+        .header-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        /* Dashboard Grid */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Machine Card Styling */
+        .machine-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .machine-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-running);
+        }
+
+        .machine-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        .machine-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .machine-id {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+        }
+
+        .machine-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        /* Status Indicators */
+        .status-badge {
+            display: flex;
+            align-items: center;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-running);
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: currentColor;
+            margin-right: 8px;
+            box-shadow: 0 0 12px currentColor;
+        }
+
+        .pulse {
+            animation: pulse-animation 2s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% { transform: scale(0.95); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(0.95); opacity: 1; }
+        }
+
+        /* Metrics Layout */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric-item {
+            background: rgba(15, 23, 42, 0.3);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .metric-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .metric-unit {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-left: 2px;
+        }
+
+        /* Progress Bar (Amp Load) */
+        .amp-section {
+            margin-top: 10px;
+        }
+
+        .amp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            width: 0%;
+            transition: width 1s ease-in-out;
+            border-radius: 4px;
+        }
+
+        /* Specific Status Overrides */
+        .card-idle::before { background: var(--accent-idle); }
+        .card-idle .status-badge { background: rgba(245, 158, 11, 0.1); color: var(--accent-idle); }
+        
+        .card-stop::before { background: var(--accent-stop); }
+        .card-stop .status-badge { background: rgba(239, 68, 68, 0.1); color: var(--accent-stop); }
+
+        /* Icon styling */
+        .machine-visual {
+            position: absolute;
+            right: -20px;
+            bottom: -20px;
+            opacity: 0.05;
+            width: 120px;
+            height: 120px;
+            pointer-events: none;
+        }
+
+        .machine-visual svg { width: 100%; height: 100%; fill: currentColor; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Machine Real-time Monitoring</h1>
+        <div class="header-subtitle">Factory Floor Dashboard v2.0 • Live Telemetry Access</div>
+    </header>
+
+    <div class="dashboard">
+        <!-- Machine 1-3 (Running) -->
+        <script>
+            const machineData = [
+                { id: 'M01', name: 'Hydraulic Press 01', status: 'RUNNING', statusClass: '' },
+                { id: 'M02', name: 'CNC Milling 02', status: 'RUNNING', statusClass: '' },
+                { id: 'M03', name: 'Conveyor Drive 03', status: 'RUNNING', statusClass: '' },
+                { id: 'M04', name: 'Injection Mold 04', status: 'IDLE', statusClass: 'card-idle' },
+                { id: 'M05', name: 'Cooling Unit 05', status: 'STOP', statusClass: 'card-stop' }
+            ];
+
+            const dashboard = document.querySelector('.dashboard');
+            
+            machineData.forEach((m, index) => {
+                const i = index + 1;
+                const card = `
+                    <div class="machine-card ${m.statusClass}" id="m${i}">
+                        <div class="machine-header">
+                            <div>
+                                <span class="machine-id">${m.id}</span>
+                                <span class="machine-name">${m.name}</span>
+                            </div>
+                            <div class="status-badge">
+                                <span class="status-dot ${m.status === 'STOP' ? '' : 'pulse'}"></span>
+                                ${m.status}
+                            </div>
+                        </div>
+
+                        <div class="metrics-grid">
+                            <div class="metric-item">
+                                <span class="metric-label">Current</span>
+                                <span class="metric-value" id="m${i}-current">0.0</span><span class="metric-unit">A</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Vibration</span>
+                                <span class="metric-value" id="m${i}-vib">0.0</span><span class="metric-unit">mm/s</span>
+                            </div>
+                        </div>
+
+                        <div class="amp-section">
+                            <div class="amp-header">
+                                <span class="metric-label">Amp Load Capacity</span>
+                                <span class="metric-value" style="font-size: 1rem;" id="m${i}-amp-text">0%</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="m${i}-progress"></div>
+                            </div>
+                        </div>
+
+                        <div class="machine-visual">
+                            <svg viewBox="0 0 24 24"><path d="M13,2V4H11V2H13M13,22V20H11V22H13M22,13V11H20V13H22M2,13V11H4V13H2M20,6.41L18.59,5L17.17,6.41L18.59,7.83L20,6.41M5,18.59L6.41,20L7.83,18.59L6.41,17.17L5,18.59M18.59,17.17L17.17,18.59L18.59,20L20,18.59L18.59,17.17M6.41,5L5,6.41L6.41,7.83L7.83,6.41L6.41,5M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7Z" /></svg>
+                        </div>
+                    </div>
+                `;
+                dashboard.innerHTML += card;
+            });
+        </script>
+    </div>
+
+    <script>
+        function updateData() {
+            // Machine 1-3: Running
+            for (let i = 1; i <= 3; i++) {
+                const current = (Math.random() * 5 + 10).toFixed(1);
+                const vib = (Math.random() * 2 + 0.5).toFixed(1);
+                const amp = Math.floor(Math.random() * 25 + 70);
+                
+                updateElements(i, current, vib, amp);
+            }
+
+            // Machine 4: Idle
+            const m4Current = (Math.random() * 1 + 1.5).toFixed(1);
+            const m4Vib = (Math.random() * 0.2 + 0.1).toFixed(1);
+            const m4Amp = Math.floor(Math.random() * 5 + 10);
+            updateElements(4, m4Current, m4Vib, m4Amp);
+
+            // Machine 5: Stop
+            updateElements(5, "0.0", "0.0", 0);
+        }
+
+        function updateElements(id, current, vib, amp) {
+            document.getElementById(`m${id}-current`).innerText = current;
+            document.getElementById(`m${id}-vib`).innerText = vib;
+            document.getElementById(`m${id}-amp-text`).innerText = amp + "%";
+            document.getElementById(`m${id}-progress`).style.width = amp + "%";
+            
+            // Dynamic color for progress bar based on load
+            const bar = document.getElementById(`m${id}-progress`);
+            if (amp > 90) bar.style.background = "#ef4444"; // Red
+            else if (amp > 80) bar.style.background = "#f59e0b"; // Amber
+            else bar.style.background = "linear-gradient(90deg, #3b82f6, #60a5fa)"; // Blue
+        }
+
+        // Run simulation every 3 seconds
+        setInterval(updateData, 3000);
+        // Initial call
+        updateData();
+    </script>
+</body>
+</html>

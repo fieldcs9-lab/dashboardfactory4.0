@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>J.A.R.V.I.S. Factory Interface - Monitoring System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="sidebar-open">
+    <!-- Scanline Overlay for HUD Effect -->
+    <div id="scanlines"></div>
+
+    <!-- Top Controls Header -->
+    <div class="controls-header">
+        <button id="sidebar-toggle" title="ACCESS SYSTEM MENU">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+        <div class="hud-brand">
+            <span class="system-label">SYSTEM PROTOCOL</span>
+            <span class="brand-name-hud">J.A.R.V.I.S. <span class="version">v5.0.1</span></span>
+        </div>
+        <div class="system-status-indicator">
+            <span class="pulse-indicator"></span>
+            CONNECTED: FACTORY_CORE_V3
+        </div>
+    </div>
+
+    <!-- Sliding Side-bar (Holographic Style) -->
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <div class="brand-name">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--accent-jarvis)" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z" />
+                </svg>
+                <span>DATABASE</span>
+            </div>
+            <button id="sidebar-close" title="ABORT OVERLAY">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <nav class="sidebar-menu" id="main-nav">
+            <button class="nav-btn active" data-zone="ALL">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <span>CENTRAL HUB</span>
+            </button>
+            <button class="nav-btn" data-zone="ZONE A">
+                <span>PRODUCTION [A]</span>
+            </button>
+            <button class="nav-btn" data-zone="ZONE B">
+                <span>MACHINING [B]</span>
+            </button>
+            <button class="nav-btn" data-zone="ZONE C">
+                <span>PACKAGING [C]</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-footer">
+            CORE_TEMP: <span id="core-temp">38.5</span>°C<br>
+            LOAD_STABILITY: <span id="load-stable">99.8</span>%
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="factory-container">
+        <header id="view-header">
+            <div class="hud-box">
+                <h1 id="view-title">FACTORY OVERVIEW</h1>
+                <div class="subtitle">TACTICAL ANALYSIS • REAL-TIME DATA STREAM</div>
+            </div>
+        </header>
+
+        <main id="factory-content">
+            <!-- Content will be rendered by assets/js/app.js -->
+        </main>
+    </div>
+
+    <!-- Application Script -->
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

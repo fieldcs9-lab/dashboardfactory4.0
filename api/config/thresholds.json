@@ -1,0 +1,14 @@
+{
+  "current": {
+    "warning": 16.5,
+    "critical": 18.0
+  },
+  "vibration": {
+    "warning": 1.8,
+    "critical": 2.4
+  },
+  "amp_load": {
+    "warning": 82,
+    "critical": 92
+  }
+}

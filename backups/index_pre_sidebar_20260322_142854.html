@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>mcDashboard Enterprise - Factory Monitoring</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav id="main-nav">
+        <button class="nav-btn active" data-zone="ALL">Factory Overview</button>
+        <button class="nav-btn" data-zone="ZONE A">Zone A (Production)</button>
+        <button class="nav-btn" data-zone="ZONE B">Zone B (Machining)</button>
+        <button class="nav-btn" data-zone="ZONE C">Zone C (Packaging)</button>
+    </nav>
+
+    <div class="factory-container">
+        <!-- Dashboard Header -->
+        <header>
+            <h1 id="view-title">Factory Overview</h1>
+            <div class="subtitle">mcDashboard Enterprise v3.2 • Real-time Telemetry Control</div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <main id="factory-content">
+            <!-- Dynamically rendered via app.js -->
+            <div style="padding: 40px; text-align: center; color: var(--text-secondary);">
+                Connecting to Factory Intelligence...
+            </div>
+        </main>
+    </div>
+
+    <!-- Application Script -->
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

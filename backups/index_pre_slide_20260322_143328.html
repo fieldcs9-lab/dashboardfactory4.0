@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>mcDashboard Enterprise - Monitoring System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <!-- Left Side-bar -->
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <div class="brand-name">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--accent-running)" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13,2V4H11V2H13M13,22V20H11V22H13M22,13V11H20V13H22M2,13V11H4V13H2M20,6.41L18.59,5L17.17,6.41L18.59,7.83L20,6.41M5,18.59L6.41,20L7.83,18.59L6.41,17.17L5,18.59M18.59,17.17L17.17,18.59L18.59,20L20,18.59L18.59,17.17M6.41,5L5,6.41L6.41,7.83L7.83,6.41L6.41,5M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7Z" />
+                </svg>
+                <span>mcDashboard</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu" id="main-nav">
+            <button class="nav-btn active" data-zone="ALL">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                <span>Factory Overview</span>
+            </button>
+            <button class="nav-btn" data-zone="ZONE A">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                <span>Zone A (Production)</span>
+            </button>
+            <button class="nav-btn" data-zone="ZONE B">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <span>Zone B (Machining)</span>
+            </button>
+            <button class="nav-btn" data-zone="ZONE C">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                <span>Zone C (Packaging)</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-footer">
+            mcDashboard Enterprise<br>v3.3 • 2026 Live
+        </div>
+    </aside>
+
+    <!-- Main Content Container -->
+    <div class="factory-container">
+        <header id="view-header">
+            <h1 id="view-title">Factory Overview</h1>
+            <div class="subtitle">Real-time Industrial Telemetry & Monitoring Systems</div>
+        </header>
+
+        <main id="factory-content">
+            <!-- Content will be rendered by assets/js/app.js -->
+        </main>
+    </div>
+
+    <!-- Application Script -->
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

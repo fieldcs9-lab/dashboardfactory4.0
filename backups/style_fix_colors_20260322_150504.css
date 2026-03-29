@@ -1,0 +1,228 @@
+:root {
+    --bg-color: #000000; /* Pure Black */
+    --sidebar-bg: rgba(0, 0, 0, 0.95);
+    --card-bg: rgba(10, 10, 10, 0.6);
+    --text-primary: #00f2ff; 
+    --text-secondary: #00a8cc;
+    --accent-jarvis: #00f2ff;
+    --accent-running: #00ff00; /* Pure Neon Green for Running */
+    --accent-idle: #ffd700;    
+    --accent-stop: #ff0000;    /* Pure Red for Stop */
+    --sidebar-width: 240px; 
+    --transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    --glow: 0 0 8px rgba(0, 242, 255, 0.4);
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Rajdhani', sans-serif;
+    background-color: var(--bg-color);
+    background-image: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+    background-size: 100% 2px;
+    margin: 0;
+    padding: 0;
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+
+#scanlines {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%);
+    background-size: 100% 2px;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.2;
+}
+
+/* Sidebar Styling - Scaled Down */
+aside#sidebar {
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    height: 100vh;
+    position: fixed;
+    left: calc(-1 * var(--sidebar-width));
+    top: 0;
+    border-right: 1px solid var(--accent-jarvis);
+    display: flex;
+    flex-direction: column;
+    z-index: 2000;
+    transition: left var(--transition);
+    backdrop-filter: blur(10px);
+}
+
+body.sidebar-open aside#sidebar { left: 0; }
+
+.sidebar-header {
+    padding: 1.25rem 1rem;
+    border-bottom: 1px solid rgba(0, 242, 255, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-shadow: var(--glow);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#sidebar-close {
+    background: rgba(0, 242, 255, 0.05);
+    border: 1px solid rgba(0, 242, 255, 0.3);
+    color: var(--text-primary);
+    width: 28px; height: 28px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+}
+
+.sidebar-menu { padding: 1rem; flex: 1; }
+
+.nav-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    padding: 0.75rem;
+    margin-bottom: 0.25rem;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+}
+
+.nav-btn.active {
+    color: var(--text-primary);
+    background: rgba(0, 242, 255, 0.08);
+    border-left: 3px solid var(--accent-jarvis);
+}
+
+.sidebar-footer {
+    padding: 1rem;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    border-top: 1px solid rgba(0, 242, 255, 0.1);
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* Header Controls - Scaled Down */
+.controls-header {
+    position: fixed;
+    top: 0; left: 0; width: 100%;
+    padding: 0.75rem 1.5rem;
+    z-index: 1500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0, 10, 20, 0.85);
+    border-bottom: 1px solid rgba(0, 242, 255, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+.hud-brand { display: flex; flex-direction: column; }
+.system-label { font-size: 0.5rem; letter-spacing: 2px; color: var(--text-secondary); }
+.brand-name-hud { font-family: 'Orbitron', sans-serif; font-size: 1rem; font-weight: 800; letter-spacing: 1px; text-shadow: var(--glow); }
+
+.system-status-indicator { font-family: 'Orbitron', sans-serif; font-size: 0.6rem; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); }
+.pulse-indicator { width: 6px; height: 6px; background: var(--accent-running); border-radius: 50%; box-shadow: 0 0 8px var(--accent-running); }
+
+#sidebar-toggle {
+    background: rgba(0, 242, 255, 0.05);
+    border: 1px solid rgba(0, 242, 255, 0.2);
+    color: var(--text-primary);
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+/* Main Content - Improved Spacing */
+.factory-container {
+    flex: 1;
+    padding: 5rem 2rem 2rem 2rem; /* Reduced from 7rem */
+    transition: margin-left var(--transition);
+}
+
+body.sidebar-open .factory-container { margin-left: var(--sidebar-width); }
+
+#view-header { margin-bottom: 2.5rem; }
+.hud-box { border-left: 3px solid var(--accent-jarvis); padding-left: 15px; }
+#view-title { font-family: 'Orbitron', sans-serif; font-size: 1.75rem; font-weight: 800; letter-spacing: 1px; margin: 0; }
+.subtitle { font-size: 0.7rem; letter-spacing: 3px; color: var(--text-secondary); margin-top: 5px; }
+
+/* Overview Grid - Compact */
+.overview-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+    gap: 1.25rem; 
+    margin-bottom: 3rem; 
+}
+
+.stat-card {
+    background: var(--card-bg);
+    padding: 1.25rem;
+    border: 1px solid rgba(0, 242, 255, 0.15);
+    position: relative;
+    clip-path: polygon(0 0, 92% 0, 100% 12%, 100% 100%, 8% 100%, 0 88%);
+}
+
+.stat-label { font-family: 'Orbitron', sans-serif; font-size: 0.6rem; color: var(--text-secondary); letter-spacing: 1.5px; }
+.stat-value { font-family: 'Orbitron', sans-serif; font-size: 1.75rem; font-weight: 800; display: block; margin-top: 5px; }
+
+.section-title { 
+    font-family: 'Orbitron', sans-serif; font-size: 0.9rem; font-weight: 700; 
+    margin: 3rem 0 1.25rem 0; display: flex; align-items: center; gap: 0.75rem; 
+    color: var(--accent-jarvis); border-bottom: 1px solid rgba(0, 242, 255, 0.1); padding-bottom: 8px; 
+}
+
+.section-icon { width: 18px; height: 18px; }
+
+/* Machine Grid - Compact */
+.machine-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 20px; 
+}
+
+.machine-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(0, 242, 255, 0.1);
+    padding: 18px;
+    position: relative;
+    clip-path: polygon(8% 0, 100% 0, 100% 88%, 92% 100%, 0 100%, 0 12%);
+}
+
+.machine-header { display: flex; justify-content: space-between; margin-bottom: 18px; align-items: center; }
+.machine-id { font-family: 'Orbitron', sans-serif; font-size: 0.6rem; color: var(--accent-idle); opacity: 0.8; }
+.machine-name { font-family: 'Orbitron', sans-serif; font-size: 0.95rem; font-weight: 700; display: block; }
+
+.status-badge { font-family: 'Orbitron', sans-serif; font-size: 0.55rem; font-weight: 800; border: 1px solid currentColor; padding: 2px 8px; letter-spacing: 0.5px; }
+
+.metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+.metric-item { background: rgba(0, 15, 30, 0.4); padding: 10px; border: 1px solid rgba(0, 242, 255, 0.08); border-left: 2px solid var(--accent-jarvis); }
+.metric-label { font-size: 0.55rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; }
+.metric-value { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--text-primary); }
+.metric-unit { font-size: 0.65rem; margin-left: 2px; color: var(--text-secondary); }
+
+.icon-inline { width: 12px; height: 12px; margin-right: 4px; }
+.stat-icon { width: 18px; height: 18px; margin-bottom: 6px; }
+
+.amp-section { margin-top: 10px; }
+.amp-header { display: flex; justify-content: space-between; margin-bottom: 6px; font-family: 'Orbitron', sans-serif; font-size: 0.6rem; }
+.progress-container { height: 3px; background: rgba(0, 242, 255, 0.08); overflow: hidden; }
+.progress-bar { height: 100%; box-shadow: 0 0 10px var(--accent-jarvis); }
+
+/* Tablet/Mobile Adjustments */
+@media (max-width: 1024px) {
+    body.sidebar-open .factory-container { margin-left: 0; opacity: 0.2; pointer-events: none; }
+    aside#sidebar { width: 100%; max-width: 300px; }
+}
