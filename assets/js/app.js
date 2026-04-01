@@ -24,6 +24,22 @@ const VIEW_CONFIG = {
     }
 };
 
+const LINE_HOLOGRAM_IMAGE = 'assets/img/production-line-hologram.webp';
+const LINE_LAYOUT = {
+    M01: { left: 15, top: 70, label: 'Infeed conveyor', zone: 'ZONE A' },
+    M02: { left: 33, top: 52, label: 'Forming station', zone: 'ZONE A' },
+    M03: { left: 42, top: 68, label: 'Transfer conveyor', zone: 'ZONE A' },
+    M05: { left: 56, top: 50, label: 'Carton packing cell', zone: 'ZONE B' },
+    M06: { left: 67, top: 66, label: 'Lane balancing', zone: 'ZONE B' },
+    M08: { left: 80, top: 48, label: 'Packing robot', zone: 'ZONE C' },
+    M09: { left: 90, top: 62, label: 'Labeling outfeed', zone: 'ZONE C' }
+};
+const SIMULATED_LINE_EVENTS = {
+    M02: { severity: 'WARNING', message: 'Material feed unstable at forming station' },
+    M05: { severity: 'CRITICAL', message: 'Packing cell overload. Queue is backing up' },
+    M09: { severity: 'CRITICAL', message: 'Labeling head fault. Outfeed blocked' }
+};
+
 const sidebar = document.getElementById('sidebar');
 const toggleBtn = document.getElementById('sidebar-toggle');
 const closeBtn = document.getElementById('sidebar-close');
@@ -358,11 +374,75 @@ function renderOverview(machines) {
     const health = averageBy(machines, (machine) => getHealthScore(machine));
 
     return `
-        <section class="overview-grid">
-            ${renderStatCard('Connected assets', total, `${normal} normal state`, 'var(--accent-strong)')}
-            ${renderStatCard('Standby and watch', `${standby + warning}`, warning > 0 ? `${warning} warning by KPI` : `${standby} standby`, warning > 0 ? 'var(--warning)' : 'var(--accent-warm)')}
-            ${renderStatCard('Critical assets', critical, critical > 0 ? 'Immediate response recommended' : 'No critical issue', critical > 0 ? 'var(--danger)' : 'var(--success)')}
-            ${renderStatCard('Health index', `${Math.round(health)}/100`, `Average load ${Math.round(avgLoad)}%`, health >= 80 ? 'var(--success)' : 'var(--accent-warm)')}
+        <section class="overview-stack">
+            ${renderFactoryHologram(machines)}
+            <div class="overview-grid">
+                ${renderStatCard('Connected assets', total, `${normal} normal state`, 'var(--accent-strong)')}
+                ${renderStatCard('Standby and watch', `${standby + warning}`, warning > 0 ? `${warning} warning by KPI` : `${standby} standby`, warning > 0 ? 'var(--warning)' : 'var(--accent-warm)')}
+                ${renderStatCard('Critical assets', critical, critical > 0 ? 'Immediate response recommended' : 'No critical issue', critical > 0 ? 'var(--danger)' : 'var(--success)')}
+                ${renderStatCard('Health index', `${Math.round(health)}/100`, `Average load ${Math.round(avgLoad)}%`, health >= 80 ? 'var(--success)' : 'var(--accent-warm)')}
+            </div>
+        </section>
+    `;
+}
+
+function renderFactoryHologram(machines) {
+    const machineMap = Object.fromEntries(machines.map((machine) => [machine.id, machine]));
+    const nodes = Object.entries(LINE_LAYOUT).map(([id, layout]) => {
+        const machine = machineMap[id];
+        const active = Boolean(machine);
+        const presentation = machine ? getLinePresentation(machine) : null;
+        const severity = presentation ? presentation.severity : 'NORMAL';
+        const summary = presentation ? presentation.message : `${layout.zone} hidden in current filter`;
+
+        return `
+            <button
+                class="line-hotspot ${severityClass(severity)} ${active ? '' : 'is-dimmed'}"
+                type="button"
+                style="left:${layout.left}%; top:${layout.top}%;"
+                ${active ? '' : 'disabled'}
+            >
+                <span class="line-hotspot-ping"></span>
+                <span class="line-hotspot-core"></span>
+                <span class="line-hotspot-card">
+                    <strong>${machine ? machine.id : id}</strong>
+                    <span>${layout.label}</span>
+                    <span>${summary}</span>
+                </span>
+            </button>
+        `;
+    }).join('');
+
+    const alarms = getFactoryAlarmNodes(machines).slice(0, 3);
+    const alarmList = alarms.length
+        ? alarms.map((machine) => {
+            const presentation = getLinePresentation(machine);
+            return `
+            <div class="line-alarm-item ${severityClass(presentation.severity)}">
+                <span class="line-alarm-machine">${machine.id}</span>
+                <div>
+                    <strong>${machine.name}</strong>
+                    <span>${presentation.message}</span>
+                </div>
+            </div>
+        `;
+        }).join('')
+        : '<p class="line-alarm-empty">No active line alarms. Hologram overlay is tracking all monitored positions.</p>';
+
+    return `
+        <section class="line-hologram-card">
+            <div class="line-hologram-copy">
+                <span class="hero-tag">Line hologram</span>
+                <h3>Factory overview digital twin</h3>
+                <p>Production line image is overlaid with simulated alarm beacons so operators can spot abnormal stations before flow is interrupted.</p>
+                <div class="line-alarm-list">${alarmList}</div>
+            </div>
+            <div class="line-hologram-stage">
+                <div class="line-hologram-grid"></div>
+                <img src="${LINE_HOLOGRAM_IMAGE}" alt="Automatic feeding and packing line hologram" class="line-hologram-image">
+                <div class="line-hologram-glow"></div>
+                ${nodes}
+            </div>
         </section>
     `;
 }
@@ -749,6 +829,47 @@ function getAggregateSeverity(machines) {
     return 'NORMAL';
 }
 
+function getFactoryAlarmNodes(machines) {
+    return [...machines]
+        .filter((machine) => LINE_LAYOUT[machine.id])
+        .filter((machine) => severityRank(getLinePresentation(machine).severity) >= severityRank('WARNING'))
+        .sort((a, b) => {
+            const aPresentation = getLinePresentation(a);
+            const bPresentation = getLinePresentation(b);
+            return severityRank(bPresentation.severity) - severityRank(aPresentation.severity) || getHealthScore(a) - getHealthScore(b);
+        });
+}
+
+function getAlarmLineMessage(machine) {
+    if (machine.status === 'STOP') {
+        return 'Line stopped and operator intervention required';
+    }
+
+    const reasons = getAlertReasons(machine);
+    if (reasons.length) {
+        return reasons.join(' · ');
+    }
+
+    if (machine.severity === 'STANDBY') {
+        return 'Station waiting for upstream material';
+    }
+
+    return 'Station is operating within live thresholds';
+}
+
+function getLinePresentation(machine) {
+    const simulation = SIMULATED_LINE_EVENTS[machine.id];
+    const liveMessage = getAlarmLineMessage(machine);
+    const severity = simulation && severityRank(simulation.severity) > severityRank(machine.severity)
+        ? simulation.severity
+        : machine.severity;
+    const message = simulation && severityRank(simulation.severity) >= severityRank(machine.severity)
+        ? simulation.message
+        : liveMessage;
+
+    return { severity, message };
+}
+
 function getAlertReasons(machine) {
     const reasons = [];
     if (machine.status === 'STOP') {
@@ -854,7 +975,7 @@ function generateMockPayload() {
             label: 'Production Department',
             data: [
                 { id: 'M01', name: 'Hydraulic Press 01', status: 'RUNNING', base: { current: 15.2, vibration: 1.2, amp_load: 85 } },
-                { id: 'M02', name: 'Hydraulic Press 02', status: 'RUNNING', base: { current: 14.8, vibration: 1.1, amp_load: 82 } },
+                { id: 'M02', name: 'Hydraulic Press 02', status: 'RUNNING', base: { current: 16.9, vibration: 1.9, amp_load: 87 } },
                 { id: 'M03', name: 'Conveyor Line A1', status: 'RUNNING', base: { current: 12.5, vibration: 0.8, amp_load: 75 } }
             ]
         },
@@ -872,7 +993,7 @@ function generateMockPayload() {
             label: 'QC and Packaging',
             data: [
                 { id: 'M07', name: 'Auto Sorter 01', status: 'RUNNING', base: { current: 11.2, vibration: 0.9, amp_load: 70 } },
-                { id: 'M08', name: 'Packing Robot 01', status: 'RUNNING', base: { current: 13.4, vibration: 1.2, amp_load: 78 } },
+                { id: 'M08', name: 'Packing Robot 01', status: 'RUNNING', base: { current: 14.2, vibration: 1.7, amp_load: 81 } },
                 { id: 'M09', name: 'Labeling Unit 01', status: 'STOP', base: { current: 0.0, vibration: 0.0, amp_load: 0 } }
             ]
         }
